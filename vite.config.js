@@ -1,11 +1,17 @@
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {defineConfig} from 'vite';
 import {hydrogen} from '@shopify/hydrogen/vite';
 import {oxygen} from '@shopify/mini-oxygen/vite';
 import {reactRouter} from '@react-router/dev/vite';
 
+const rootDir = path.dirname(fileURLToPath(import.meta.url));
+
 export default defineConfig({
   plugins: [hydrogen(), oxygen(), reactRouter()],
   resolve: {
+    // MiniOxygen / Vite module-runner can resolve `~/…` without tsconfig paths; map explicitly.
+    alias: [{find: /^~\//, replacement: `${path.join(rootDir, 'app')}/`}],
     tsconfigPaths: true,
   },
   build: {
